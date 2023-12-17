@@ -29,7 +29,7 @@ def add_cart(request):
         total_quantity = sum(item.quantity for item in items)
 
         # print('success')
-        return HttpResponse(simplejson.dumps({'quantity' : cart_item.quantity , 'price' : price, 'total_price' : total_price, 'total_quantity' : total_quantity}),content_type='application/json')
+        return HttpResponse(simplejson.dumps({'quantity' : cart_item.quantity , 'price' : price, 'total_price' : total_price, 'total_quantity' : total_quantity, 'cart_len' : len(items)}),content_type='application/json')
 
     
 def remove_cart(request):
@@ -41,7 +41,7 @@ def remove_cart(request):
             items = Cart.objects.all()
             total_price = sum(item.product.price * item.quantity for item in items)
             total_quantity = sum(item.quantity for item in items)
-            return HttpResponse(simplejson.dumps({'quantity' : -1 , 'total_price' : total_price, 'total_quantity' : total_quantity}),content_type='application/json')
+            return HttpResponse(simplejson.dumps({'quantity' : -1 , 'total_price' : total_price, 'total_quantity' : total_quantity, 'cart_len' : len(items)}),content_type='application/json')
         else:
             cart_item.quantity -= 1
             cart_item.save()
@@ -55,5 +55,5 @@ def remove_cart(request):
             price = cart_item.product.price * cart_item.quantity
             
             # print('success')
-            return HttpResponse(simplejson.dumps({'quantity' : cart_item.quantity , 'price' : price, 'total_price' : total_price, 'total_quantity' : total_quantity}),content_type='application/json')
+            return HttpResponse(simplejson.dumps({'quantity' : cart_item.quantity , 'price' : price, 'total_price' : total_price, 'total_quantity' : total_quantity, 'cart_len' : len(items)}),content_type='application/json')
 

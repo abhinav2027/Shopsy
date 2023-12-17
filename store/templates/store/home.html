@@ -106,6 +106,7 @@
                   success: function( data ) 
                   {
                       document.getElementById('add-cart-' + (pid)).innerText = 'Added : ' + data.quantity;
+                      document.getElementById('cart-total').innerText = data.cart_len;
                      
                   }
                })
