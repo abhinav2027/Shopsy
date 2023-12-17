@@ -105,9 +105,8 @@
                   },
                   success: function( data ) 
                   {
-                      console.log(document.getElementById('add-cart-' + (pid)).innerText);
-                      document.getElementById('add-cart-' + (pid)).innerText = data;
-                      console.log(data);
+                      document.getElementById('add-cart-' + (pid)).innerText = 'Added : ' + data.quantity;
+                     
                   }
                })
           };

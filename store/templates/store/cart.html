@@ -8,8 +8,8 @@
             <br>
             <table class="table">
                 <tr>
-                    <th><h5>Items : <strong>{{quantity}}</h5></th>
-                    <th><h5>Total : <strong>₹{{price}}</strong></h5></th>
+                    <th><h5 >Items : <strong id="total-quantity">{{quantity}}</h5></th>
+                    <th><h5 >Total : <strong id="total-price">₹{{price}}</strong></h5></th>
                     <th>
                         <a class="btn btn-success" href="{% url 'checkout' %}" style="float:right;margin:5px;">Checkout</a>
                     </th>
@@ -27,18 +27,18 @@
                 <div style="flex:1"><strong>Total</strong></div>
             </div>
             {% for item,pprice in items %}
-            <div class="cart-row">
+            <div class="cart-row" id="cart-row-{{item.product_id}}">
                 <div style="flex:2"><img class="row-image" src="{{item.product.image.url}}"></div>
                 <div style="flex:2"><p>{{item.product.product_name}}</p></div>
                 <div style="flex:1"><p>₹{{item.product.price}}</p></div>
                 <div style="flex:1"><p id="quantity-{{item.product_id}}" class="quantity">{{item.quantity}}</p>
                     <div class="quantity">
                         <img class="chg-quantity" src="{% static 'images/arrow-up.png' %}" onclick="increment('{{item.product_id}}')">
-                        <img class="chg-quantity" src="{% static 'images/arrow-down.png' %}">
+                        <img class="chg-quantity" src="{% static 'images/arrow-down.png' %}" onclick="decrement('{{item.product_id}}')">
                     </div>
                 </div>
                 <div style="flex:1">
-                    <p>₹{{pprice}}</p>
+                    <p id="price-{{item.product_id}}">₹{{pprice}}</p>
                 </div>
                 
 
@@ -48,8 +48,27 @@
         <script>
 
             function increment(pid){
-                console.log('clicked');
               $.ajax(
+              {
+                  type:"GET",
+                  url: "add-cart/",
+                  data:{
+                           product_id: pid
+                  },
+                  success: function( data ) 
+                  {
+                    console.log(data);
+                    document.getElementById('quantity-' + pid).innerText = data.quantity;
+                    document.getElementById('price-' + pid).innerText = '₹' + data.price;
+                    document.getElementById('total-quantity').innerText = data.total_quantity;
+                    document.getElementById('total-price').innerText ='₹' + data.total_price;
+        
+                  }
+               })
+                
+            }
+            function decrement(pid){
+                $.ajax(
               {
                   type:"GET",
                   url: "update-cart",
@@ -58,11 +77,24 @@
                   },
                   success: function( data ) 
                   {
-                    document.getElementById('quantity-' + pid).innerText = data;
-        
+                    if(data.quantity==-1){
+                        var delete_element = document.getElementById('cart-row-' + pid);
+                        delete_element.parentNode.removeChild(delete_element);
+                        document.getElementById('total-quantity').innerText = data.total_quantity;
+                        document.getElementById('total-price').innerText ='₹' + data.total_price;
+
+
+                    }
+                    else{
+                    document.getElementById('quantity-' + pid).innerText = data.quantity;
+                    document.getElementById('price-' + pid).innerText = '₹'+data.price;
+                    document.getElementById('total-quantity').innerText = data.total_quantity;
+                    document.getElementById('total-price').innerText ='₹' + data.total_price;
+
+                    }
+
                   }
                })
-                
             }
         </script>
         
